@@ -24,6 +24,9 @@ import {
   segmentSql,
   getSegment
 } from './tools/cdp';
+import { listJobsTool, handleListJobs } from './tools/list-jobs';
+import { getJobStatusTool, handleGetJobStatus } from './tools/get-job-status';
+import { getJobTool, handleGetJob } from './tools/get-job';
 
 /**
  * Treasure Data MCP Server implementation
@@ -256,6 +259,22 @@ export class TDMcpServer {
           description: getSegment.description,
           inputSchema: getSegment.inputSchema,
         },
+        // Job Tools
+        {
+          name: listJobsTool.name,
+          description: listJobsTool.description,
+          inputSchema: listJobsTool.inputSchema,
+        },
+        {
+          name: getJobStatusTool.name,
+          description: getJobStatusTool.description,
+          inputSchema: getJobStatusTool.inputSchema,
+        },
+        {
+          name: getJobTool.name,
+          description: getJobTool.description,
+          inputSchema: getJobTool.inputSchema,
+        },
       ],
     }));
 
@@ -468,6 +487,19 @@ export class TDMcpServer {
           case getSegment.name: {
             const result = await getSegment.execute(args as any || {});
             return result;
+          }
+
+          // Job Tools
+          case listJobsTool.name: {
+            return await handleListJobs(args, this.config);
+          }
+
+          case getJobStatusTool.name: {
+            return await handleGetJobStatus(args, this.config);
+          }
+
+          case getJobTool.name: {
+            return await handleGetJob(args, this.config);
           }
 
           default:
